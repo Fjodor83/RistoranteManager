@@ -1,0 +1,94 @@
+﻿@model RistoranteManager.Models.ViewModels.ReceiptViewModel
+@{
+    ViewData["Title"] = "Preconto";
+}
+<div class="mb-4 p-3 bg-warning bg-opacity-10 rounded">
+    <h4 class="mb-3">Prodotti Pizzeria</h4>
+    @if (Model.PizzeriaItems.Any())
+    {
+        <div class="list-group">
+            @foreach (var item in Model.PizzeriaItems)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent py-1">
+                    <div>
+                        <span>@item.Name</span>
+                        @if (item.Customizations != null && item.Customizations.Any())
+                        {
+                            <span class="text-muted ms-2">(@string.Join(", ", item.Customizations))</span>
+                        }
+                    </div>
+                    <span>€@item.TotalPrice.ToString("0.00")</span>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Nessun prodotto dalla pizzeria</p>
+    }
+</div>
+
+<div class="mb-4 p-3 bg-warning bg-opacity-25 rounded">
+    <h4 class="mb-3">Pizze Senza Glutine</h4>
+    @if (Model.GlutenFreeItems.Any())
+    {
+        <div class="list-group">
+            @foreach (var item in Model.GlutenFreeItems)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center border-0 bg-transparent py-1">
+                    <div>
+                        <span>@item.Name</span>
+                        @if (item.Customizations != null && item.Customizations.Any())
+                        {
+                            <span class="text-muted ms-2">(@string.Join(", ", item.Customizations))</span>
+                        }
+                    </div>
+                    <span>€@item.TotalPrice.ToString("0.00")</span>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Nessuna pizza senza glutine</p>
+    }
+</div>
+
+<div class="mb-4 p-3 bg-light rounded">
+    <h4 class="mb-3">Riepilogo Impasti</h4>
+    @if (Model.DoughSummary.Any())
+    {
+        <div class="list-group">
+            @foreach (var dough in Model.DoughSummary)
+            {
+                <div class="list-group-item border-0 bg-transparent py-1">
+                    @dough.Value × Tipo @dough.Key
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Nessun impasto utilizzato</p>
+    }
+</div>
+
+<div class="d-flex justify-content-between align-items-center border-top pt-3">
+    <h3>Totale: €@Model.Total.ToString("0.00")</h3>
+    <div>
+        <button id="printBtn" class="btn btn-primary me-2">
+            <i class="bi bi-printer"></i> Stampa
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCloseModal">
+            Chiudi
+        </button>
+    </div>
+</div>
+            
+@section Scripts {
+    <script>
+        document.getElementById('printBtn').addEventListener('click', function() {
+        window.print();
+        });
+    </script>
+}

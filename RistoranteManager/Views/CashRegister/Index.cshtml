@@ -1,0 +1,68 @@
+﻿@model RistoranteManager.Models.ViewModels.CashRegisterViewModel
+@{
+    ViewData["Title"] = "Cassa";
+}
+@if (Model.ClosedOrders.Any())
+{
+    <div class="mb-4">
+        @foreach (var order in Model.ClosedOrders)
+        {
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Tavolo @order.TableNumber - @order.Covers coperti</h3>
+                        <span class="fs-5">€@order.Total.ToString("0.00")</span>
+                    </div>
+                    <div class="text-white-50">
+                        <small>@order.Date.ToString("dd/MM/yyyy HH:mm")</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="mb-3">Prodotti ordinati:</h5>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var item in order.Items)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <span>@item.Name</span>
+                                    @if (item.Customizations != null && item.Customizations.Any())
+                                    {
+                                        <span class="text-muted ms-2">(@string.Join(", ", item.Customizations))</span>
+                                    }
+                                </div>
+                                <span>€@item.TotalPrice.ToString("0.00")</span>
+                            </li>
+                        }
+                    </ul>
+
+                    @if (order.UseCount > 1)
+                    {
+                        <p class="text-warning mt-3">Tavolo utilizzato @order.UseCount volte</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="card bg-light">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Totale Incassi: €@Model.TotalRevenue.ToString("0.00")</h2>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                    Torna alla Home
+                </a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <p>Nessun tavolo chiuso</p>
+    </div>
+    <div class="text-center">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+            Torna alla Home
+        </a>
+    </div>
+}

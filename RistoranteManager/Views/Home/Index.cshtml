@@ -1,0 +1,65 @@
+﻿@model IEnumerable<RistoranteManager.Models.ViewModels.TableViewModel>
+@{
+    ViewData["Title"] = "Tavoli";
+}
+<div class="row">
+    @foreach (var table in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card @(table.Status == "Occupied" ? "border-danger" : "") @(table.UseCount > 1 ? "border-warning" : "")">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Tavolo @table.Number</h3>
+                    @if (table.Status == "Occupied")
+                    {
+                        <p class="text-danger">Occupato - @table.Covers coperti</p>
+                        <p class="text-muted">Ordini: @table.ItemCount prodotti</p>
+                    }
+                    else
+                    {
+                        <p class="text-success">Libero</p>
+                    }
+                    @if (table.UseCount > 1)
+                    {
+                        <p class="text-warning">Utilizzato @table.UseCount volte</p>
+                    }
+                    <a asp-action="Details" asp-route-id="@table.Id" class="btn btn-primary">Seleziona</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="mt-5">
+    <h2>Tavoli Attivi</h2>
+    <div class="row">
+        @{
+            var activeTables = Model.Where(t => t.Status == "Occupied").ToList();
+        }
+        @if (activeTables.Any())
+        {
+            @foreach (var table in activeTables)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4>Tavolo @table.Number - @table.Covers coperti</h4>
+                                <span class="text-danger">€@table.Total.ToString("0.00")</span>
+                            </div>
+                            <p class="text-muted">@table.ItemCount prodotti ordinati</p>
+                            <div class="text-end">
+                                <a asp-action="Details" asp-route-id="@table.Id" class="btn btn-danger">Visualizza</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p class="text-muted">Nessun tavolo attivo al momento</p>
+            </div>
+        }
+    </div>
+</div>

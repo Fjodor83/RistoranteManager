@@ -1,0 +1,44 @@
+﻿@model RistoranteManager.Models.ViewModels.TableViewModel
+@{
+    ViewData["Title"] = $"Tavolo {Model.Number}";
+}
+
+<div class="container">
+    <h1>Tavolo @Model.Number</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3>Dettagli</h3>
+            <dl class="row">
+                <dt class="col-sm-3">Stato:</dt>
+                <dd class="col-sm-9">@Model.Status</dd>
+
+                <dt class="col-sm-3">Coperti:</dt>
+                <dd class="col-sm-9">@Model.Covers</dd>
+
+                <dt class="col-sm-3">Prodotti ordinati:</dt>
+                <dd class="col-sm-9">@Model.ItemCount</dd>
+
+                <dt class="col-sm-3">Utilizzi:</dt>
+                <dd class="col-sm-9">@Model.UseCount</dd>
+
+                <dt class="col-sm-3">Totale:</dt>
+                <dd class="col-sm-9">€@Model.Total.ToString("0.00")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Index" class="btn btn-secondary">Torna alla lista</a>
+
+        @if (Model.Status == "Occupied")
+        {
+            <a asp-action="EditOrder" asp-route-id="@Model.Id" class="btn btn-primary">Modifica ordine</a>
+            <a asp-action="CloseTable" asp-route-id="@Model.Id" class="btn btn-danger">Chiudi tavolo</a>
+        }
+        else
+        {
+            <a asp-action="OpenTable" asp-route-id="@Model.Id" class="btn btn-success">Apri tavolo</a>
+        }
+    </div>
+</div>

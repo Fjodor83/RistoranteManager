@@ -1,0 +1,49 @@
+﻿@model RistoranteManager.Models.ViewModels.OrderViewModel
+@{
+    ViewData["Title"] = "Riepilogo Ordine";
+}
+@if (Model.Items.Any())
+{
+    <div class="list-group mb-4">
+        @foreach (var item in Model.Items)
+        {
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">@item.Name</h5>
+                    @if (item.Customizations != null && item.Customizations.Any())
+                    {
+                        <p class="mb-1 text-muted">@string.Join(", ", item.Customizations)</p>
+                    }
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="me-3">€@item.TotalPrice.ToString("0.00")</span>
+                    <form asp-action="RemoveItem" method="post">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="tableId" value="@Model.TableId" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center border-top pt-3">
+        <h4>Totale: €@Model.Total.ToString("0.00")</h4>
+        <div>
+            <a asp-action="Menu" asp-route-tableId="@Model.TableId" class="btn btn-warning me-2">
+                Modifica Ordine
+            </a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmSendModal">
+                Invia Ordine
+            </button>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        Non ci sono prodotti nell'ordine. <a asp-action="Menu" asp-route-tableId="@Model.TableId">Torna al menu</a> per aggiungere prodotti.
+    </div>
+}
