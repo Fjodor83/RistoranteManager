@@ -2,13 +2,42 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 import os
 from dotenv import load_dotenv
 import uuid
+import json
+from bson import ObjectId
 
 load_dotenv()
+
+# Custom JSON encoder to handle MongoDB ObjectId
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return super().default(o)
+
+# Custom response model for MongoDB documents
+def serialize_mongo_doc(doc: dict) -> dict:
+    """Convert MongoDB document to serializable dict"""
+    if doc is None:
+        return None
+    
+    result = {}
+    for key, value in doc.items():
+        if isinstance(value, ObjectId):
+            result[key] = str(value)
+        elif isinstance(value, list):
+            result[key] = [serialize_mongo_doc(item) if isinstance(item, dict) else 
+                          str(item) if isinstance(item, ObjectId) else item 
+                          for item in value]
+        elif isinstance(value, dict):
+            result[key] = serialize_mongo_doc(value)
+        else:
+            result[key] = value
+    return result
 
 app = FastAPI(title="Ristorante Manager API", version="1.0.0")
 
