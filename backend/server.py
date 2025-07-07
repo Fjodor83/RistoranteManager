@@ -79,6 +79,11 @@ class Table(BaseModel):
     covers: int
     use_count: int
     is_closed: bool
+    
+    class Config:
+        json_encoders = {
+            ObjectId: lambda oid: str(oid)
+        }
 
 class Product(BaseModel):
     id: str
@@ -87,22 +92,42 @@ class Product(BaseModel):
     category: str  # antipasti, pasta, pizza, dessert
     type: str  # kitchen, pizzeria
     is_customizable: bool
+    
+    class Config:
+        json_encoders = {
+            ObjectId: lambda oid: str(oid)
+        }
 
 class DoughType(BaseModel):
     id: str
     name: str
     additional_price: float
+    
+    class Config:
+        json_encoders = {
+            ObjectId: lambda oid: str(oid)
+        }
 
 class Extra(BaseModel):
     id: str
     name: str
     price: float
+    
+    class Config:
+        json_encoders = {
+            ObjectId: lambda oid: str(oid)
+        }
 
 class OrderItemExtra(BaseModel):
     id: str
     order_item_id: str
     name: str
     price: float
+    
+    class Config:
+        json_encoders = {
+            ObjectId: lambda oid: str(oid)
+        }
 
 class OrderItem(BaseModel):
     id: str
@@ -114,6 +139,11 @@ class OrderItem(BaseModel):
     dough_type: Optional[str] = None
     product_type: str
     extras: List[OrderItemExtra] = []
+    
+    class Config:
+        json_encoders = {
+            ObjectId: lambda oid: str(oid)
+        }
 
 class Order(BaseModel):
     id: str
@@ -122,6 +152,11 @@ class Order(BaseModel):
     is_sent: bool
     is_closed: bool
     items: List[OrderItem] = []
+    
+    class Config:
+        json_encoders = {
+            ObjectId: lambda oid: str(oid)
+        }
 
 # Request models
 class OpenTableRequest(BaseModel):
