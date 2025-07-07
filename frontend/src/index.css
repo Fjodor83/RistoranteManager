@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-modern bg-italian-white text-gray-900;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-italian-red hover:bg-hover-red text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-italian-yellow hover:bg-hover-yellow text-gray-900 px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-lg;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-italian-red text-italian-red hover:bg-italian-red hover:text-white px-6 py-3 rounded-lg font-medium transition-all duration-200;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-lg p-6 border border-gray-100;
+  }
+  
+  .card-header {
+    @apply border-b border-gray-200 pb-4 mb-6;
+  }
+  
+  .table-card {
+    @apply bg-white rounded-xl shadow-lg p-6 border-2 transition-all duration-200 hover:shadow-xl;
+  }
+  
+  .table-free {
+    @apply border-italian-green bg-green-50;
+  }
+  
+  .table-occupied {
+    @apply border-italian-red bg-red-50;
+  }
+  
+  .menu-category {
+    @apply flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+  
+  .menu-category.active {
+    @apply bg-italian-red text-white;
+  }
+  
+  .menu-category:not(.active) {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+  }
+  
+  .product-card {
+    @apply bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-all duration-200;
+  }
+  
+  .order-item {
+    @apply flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200;
+  }
+  
+  .receipt-section {
+    @apply border-b border-gray-200 pb-4 mb-4;
+  }
+  
+  .receipt-section:last-child {
+    @apply border-b-0 pb-0 mb-0;
+  }
+}
