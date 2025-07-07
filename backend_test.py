@@ -242,6 +242,11 @@ class RistoranteManagerBackendTest(unittest.TestCase):
         if not self.free_table or not self.pizza_product or not self.kitchen_product:
             self.skipTest("Missing required test data")
         
+        # Print debug info
+        print(f"Free table: {self.free_table}")
+        print(f"Kitchen product: {self.kitchen_product}")
+        print(f"Pizza product: {self.pizza_product}")
+        
         # Step 1: Open a table
         table_id = self.free_table['id']
         covers = 3
