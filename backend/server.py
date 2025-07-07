@@ -308,6 +308,7 @@ async def get_products(category: Optional[str] = None):
         filter_query["category"] = category
     
     products = await db.products.find(filter_query).to_list(None)
+    products = [serialize_mongo_doc(product) for product in products]
     return products
 
 @app.get("/api/products/categories")
@@ -321,12 +322,14 @@ async def get_categories():
 async def get_dough_types():
     """Get all dough types"""
     dough_types = await db.dough_types.find().to_list(None)
+    dough_types = [serialize_mongo_doc(dough_type) for dough_type in dough_types]
     return dough_types
 
 @app.get("/api/extras")
 async def get_extras():
     """Get all extras"""
     extras = await db.extras.find().to_list(None)
+    extras = [serialize_mongo_doc(extra) for extra in extras]
     return extras
 
 # Orders
@@ -338,10 +341,14 @@ async def add_item_to_order(request: AddItemRequest):
     if not active_order:
         raise HTTPException(status_code=404, detail="No active order found for this table")
     
+    active_order = serialize_mongo_doc(active_order)
+    
     # Get product
     product = await db.products.find_one({"id": request.product_id})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+    
+    product = serialize_mongo_doc(product)
     
     # Calculate total price
     total_price = product["price"]
@@ -362,6 +369,7 @@ async def add_item_to_order(request: AddItemRequest):
     if request.dough_type:
         dough = await db.dough_types.find_one({"name": request.dough_type})
         if dough:
+            dough = serialize_mongo_doc(dough)
             total_price += dough["additional_price"]
     
     # Add extras if applicable
@@ -369,6 +377,7 @@ async def add_item_to_order(request: AddItemRequest):
         for extra_id in request.extra_ids:
             extra = await db.extras.find_one({"id": extra_id})
             if extra:
+                extra = serialize_mongo_doc(extra)
                 order_item["extras"].append({
                     "id": str(uuid.uuid4()),
                     "name": extra["name"],
@@ -398,8 +407,11 @@ async def get_order_for_table(table_id: str):
     if not active_order:
         raise HTTPException(status_code=404, detail="No active order found")
     
+    active_order = serialize_mongo_doc(active_order)
+    
     # Get order items
     items = await db.order_items.find({"order_id": active_order["id"]}).to_list(None)
+    items = [serialize_mongo_doc(item) for item in items]
     
     # Calculate total
     total = sum(item["total_price"] for item in items)
@@ -430,11 +442,15 @@ async def get_receipt(order_id: str):
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     
+    order = serialize_mongo_doc(order)
+    
     # Get table
     table = await db.tables.find_one({"id": order["table_id"]})
+    table = serialize_mongo_doc(table)
     
     # Get items
     items = await db.order_items.find({"order_id": order_id}).to_list(None)
+    items = [serialize_mongo_doc(item) for item in items]
     
     # Group items by type
     kitchen_items = [item for item in items if item["product_type"] == "kitchen"]
