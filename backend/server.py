@@ -201,15 +201,18 @@ async def startup_event():
 async def get_tables():
     """Get all tables with their current status"""
     tables = await db.tables.find({"is_closed": False}).to_list(None)
+    tables = [serialize_mongo_doc(table) for table in tables]
     
     # Get active orders count for each table
     for table in tables:
         orders = await db.orders.find({"table_id": table["id"], "is_closed": False}).to_list(None)
+        orders = [serialize_mongo_doc(order) for order in orders]
         items_count = 0
         total = 0.0
         
         for order in orders:
             items = await db.order_items.find({"order_id": order["id"]}).to_list(None)
+            items = [serialize_mongo_doc(item) for item in items]
             items_count += len(items)
             total += sum(item["total_price"] for item in items)
         
@@ -225,10 +228,14 @@ async def get_table(table_id: str):
     if not table:
         raise HTTPException(status_code=404, detail="Table not found")
     
+    table = serialize_mongo_doc(table)
+    
     # Get active order
     active_order = await db.orders.find_one({"table_id": table_id, "is_closed": False})
     if active_order:
+        active_order = serialize_mongo_doc(active_order)
         items = await db.order_items.find({"order_id": active_order["id"]}).to_list(None)
+        items = [serialize_mongo_doc(item) for item in items]
         table["active_order"] = active_order
         table["items"] = items
     
