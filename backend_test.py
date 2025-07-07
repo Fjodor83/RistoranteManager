@@ -90,7 +90,11 @@ class RistoranteManagerBackendTest(unittest.TestCase):
             "dough_type": dough_type,
             "extra_ids": extra_ids or []
         }
+        print(f"Adding item to order with data: {data}")
         response = requests.post(f"{API_URL}/orders/add-item", json=data)
+        print(f"Response status: {response.status_code}")
+        if response.status_code != 200:
+            print(f"Error response: {response.text}")
         self.assertEqual(response.status_code, 200)
         return response.json()
     
