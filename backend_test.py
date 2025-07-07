@@ -95,6 +95,12 @@ class RistoranteManagerBackendTest(unittest.TestCase):
         print(f"Response status: {response.status_code}")
         if response.status_code != 200:
             print(f"Error response: {response.text}")
+            # Let's try to get more information about the error
+            try:
+                error_data = response.json()
+                print(f"Error JSON: {error_data}")
+            except:
+                print("Could not parse error response as JSON")
         self.assertEqual(response.status_code, 200)
         return response.json()
     
